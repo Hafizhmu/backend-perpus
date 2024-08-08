@@ -10,6 +10,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('buku', [BukuController::class, 'index']);
+Route::get('bukuAll', [BukuController::class, 'bukuAll']);
 Route::get('peminjam', [PeminjamController::class, 'index']);
 Route::get('riwayat', [PeminjamController::class, 'riwayatPeminjaman']);
 
@@ -17,7 +18,7 @@ Route::post('add/buku', [BukuController::class, 'store']);
 Route::post('add/peminjaman', [PeminjamController::class, 'store']);
 
 Route::put('update/buku', [BukuController::class, 'update']);
-Route::put('update/peminjaman', [PeminjamController::class, 'update']);
+Route::put('update/peminjaman/{id}', [PeminjamController::class, 'update']);
 
-Route::delete('delete/buku/{$id}', [BukuController::class, 'destroy']);
-Route::delete('delete/peminjaman/{$id}', [PeminjamController::class, 'destroy']);
+Route::delete('delete/buku/{id}', [BukuController::class, 'destroy']);
+Route::delete('delete/peminjaman/{id}', [PeminjamController::class, 'destroy']);

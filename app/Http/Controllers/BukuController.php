@@ -50,6 +50,17 @@ class BukuController extends Controller
             'totalPages' => $buku->lastPage()
         ], 200);
     }
+    public function bukuAll(Request $request)
+    {
+      
+        $buku = Buku::all();
+
+        return response()->json([
+            'status' => 'berhasil mendapatkan Buku',
+            'error' => false,
+            'data' => $buku
+        ], 200);
+    }
 
     /**
      * Show the form for creating a new resource.

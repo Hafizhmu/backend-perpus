@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('bukus', function (Blueprint $table) {
             $table->id('id_buku');
-            $table->string('nama_buku');
+            $table->string('judul_buku');
             $table->string('jenis_buku');
             $table->string('tema');
             $table->string('posisi_buku');
-            $table->string('pencipta');
+            $table->string('penulis');
             $table->string('tahun_terbit');
             $table->string('jumlah_buku');
             $table->timestamps();

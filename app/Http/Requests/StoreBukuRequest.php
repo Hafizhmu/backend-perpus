@@ -22,11 +22,11 @@ class StoreBukuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_buku' => 'required|string|max:255',
+            'judul_buku' => 'required|string|max:255',
             'jenis_buku' => 'required|string|max:255',
             'tema' => 'required|string|max:255',
             'posisi_buku' => 'required|string|max:255',
-            'pencipta' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|min:1000|max:' . (date('Y') + 1),
             'jumlah_buku' => 'required|integer|min:1',
         ];

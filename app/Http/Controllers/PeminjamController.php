@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buku;
 use App\Models\Peminjam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -86,7 +87,54 @@ class PeminjamController extends Controller
      */
     public function store(StorePeminjamRequest $request)
     {
-        //
+        // Temukan buku yang dipinjam
+        $buku = Buku::find($request->id_buku);
+
+        // Periksa apakah buku ditemukan dan stok mencukupi
+        if (!$buku) {
+            return response()->json([
+                'status' => 'buku tidak ditemukan',
+                'error' => true,
+                'data' => null
+            ], 404);
+        }
+
+        if ($buku->jumlah_buku <= 0) {
+            return response()->json([
+                'status' => 'stok buku tidak mencukupi',
+                'error' => true,
+                'data' => null
+            ], 400);
+        }
+
+        // Mulai transaksi database
+        DB::beginTransaction();
+        try {
+            // Buat peminjaman baru
+            $peminjam = Peminjam::create($request->all());
+
+            // Kurangi stok buku
+            $buku->jumlah_buku -= 1;
+            $buku->save();
+
+            // Komit transaksi
+            DB::commit();
+
+            return response()->json([
+                'status' => 'berhasil menambahkan peminjaman',
+                'error' => false,
+                'data' => $peminjam
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi kesalahan
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'gagal menambahkan peminjaman',
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -108,9 +156,62 @@ class PeminjamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePeminjamRequest $request, Peminjam $peminjam)
+    public function update(StorePeminjamRequest $request, $id)
     {
-        //
+        // Find the loan record
+        $peminjam = Peminjam::find($id);
+
+        // Check if tanggal_kembali is being set or updated
+        if ($request->has('tanggal_kembali') && $request->input('tanggal_kembali') !== null) {
+            $buku = Buku::find($peminjam->id_buku);
+
+            // Validate the book exists
+            if ($buku) {
+                // Start a database transaction
+                DB::beginTransaction();
+                try {
+                    // Update the loan record with the return date
+                    $peminjam->update($request->all());
+
+                    // Increment the book's stock
+                    $buku->jumlah_buku += 1;
+                    $buku->save();
+
+                    // Commit the transaction
+                    DB::commit();
+
+                    return response()->json([
+                        'status' => 'berhasil memperbarui peminjaman dan stok buku',
+                        'error' => false,
+                        'data' => $peminjam
+                    ], 200);
+                } catch (\Exception $e) {
+                    // Rollback the transaction if there's an error
+                    DB::rollBack();
+
+                    return response()->json([
+                        'status' => 'gagal memperbarui peminjaman',
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ], 500);
+                }
+            } else {
+                return response()->json([
+                    'status' => 'buku tidak ditemukan',
+                    'error' => true,
+                    'data' => null
+                ], 404);
+            }
+        } else {
+            // If no return date is set, just update other fields if necessary
+            $peminjam->update($request->all());
+
+            return response()->json([
+                'status' => 'berhasil memperbarui peminjaman',
+                'error' => false,
+                'data' => $peminjam
+            ], 200);
+        }
     }
 
     /**

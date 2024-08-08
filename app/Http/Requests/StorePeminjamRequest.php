@@ -23,7 +23,7 @@ class StorePeminjamRequest extends FormRequest
     {
         return [
             'nama_peminjam' => 'required|string|max:255',
-            'id_buku' => 'required|exists:buku,id_buku',
+            'id_buku' => 'required|exists:bukus,id_buku',
             'tanggal_peminjaman' => 'required|date',
             'tanggal_kembali_sementara' => 'required|date|after_or_equal:tanggal_peminjaman',
             'tanggal_kembali' => 'nullable|date|after_or_equal:tanggal_peminjaman',
