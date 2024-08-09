@@ -59,7 +59,7 @@ class PeminjamController extends Controller
             return response()->json([
                 'status' => 'tidak ada riwayat peminjaman untuk buku ini',
                 'error' => true,
-                'data' => [],
+                'data' => $riwayat,
                 'page' => $riwayat->currentPage(),    // Current page number
                 'limit' => $riwayat->perPage(),       // Number of items per page
                 'totalRecords' => $riwayat->total(),  // Total number of records
@@ -70,7 +70,11 @@ class PeminjamController extends Controller
         return response()->json([
             'status' => 'berhasil mendapatkan riwayat peminjaman buku',
             'error' => false,
-            'data' => $riwayat
+            'data' => $riwayat->items(),
+            'page' => $riwayat->currentPage(),    // Current page number
+            'limit' => $riwayat->perPage(),       // Number of items per page
+            'totalRecords' => $riwayat->total(),  // Total number of records
+            'totalPages' => $riwayat->lastPage()
         ], 200);
     }
 
