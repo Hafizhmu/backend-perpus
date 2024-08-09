@@ -16,14 +16,15 @@ class PeminjamController extends Controller
      */
     public function index(Request $request)
     {
+        $query = Peminjam::query();
         $limit = $request->query('limit', 10);  // Default limit is 10
         $page = $request->query('page', 1);     // Default page is 1
-        $peminjaman = Peminjam::paginate($limit);
+        $peminjaman = $query->paginate($limit);
 
         return response()->json([
             'status' => 'berhasil mendapatkan daftar peminjaman',
             'error' => false,
-            'data' => $peminjaman,
+            'data' => $peminjaman->items(),
             'page' => $peminjaman->currentPage(),    // Current page number
             'limit' => $peminjaman->perPage(),       // Number of items per page
             'totalRecords' => $peminjaman->total(),  // Total number of records
@@ -45,7 +46,7 @@ class PeminjamController extends Controller
                 'peminjams.tanggal_kembali_sementara',
                 'peminjams.tanggal_kembali',
                 'peminjams.alamat',
-                'bukus.nama_buku',
+                'bukus.judul_buku',
                 'bukus.jenis_buku',
                 'bukus.tema'
             )
