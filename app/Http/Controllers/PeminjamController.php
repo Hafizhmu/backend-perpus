@@ -59,7 +59,7 @@ class PeminjamController extends Controller
             return response()->json([
                 'status' => 'tidak ada riwayat peminjaman untuk buku ini',
                 'error' => true,
-                'data' => $riwayat,
+                'data' => $riwayat->items(),
                 'page' => $riwayat->currentPage(),    // Current page number
                 'limit' => $riwayat->perPage(),       // Number of items per page
                 'totalRecords' => $riwayat->total(),  // Total number of records
