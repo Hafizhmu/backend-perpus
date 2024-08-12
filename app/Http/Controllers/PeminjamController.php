@@ -19,7 +19,20 @@ class PeminjamController extends Controller
         $query = Peminjam::query();
         $limit = $request->query('limit', 10);  // Default limit is 10
         $page = $request->query('page', 1);     // Default page is 1
-        $peminjaman = $query->paginate($limit);
+        $peminjaman =  DB::table('peminjams')
+            ->join('bukus', 'peminjams.id_buku', '=', 'bukus.id_buku')
+            ->select(
+                'peminjams.id_peminjaman',
+                'peminjams.nama_peminjam',
+                'peminjams.tanggal_peminjaman',
+                'peminjams.tanggal_kembali_sementara',
+                'peminjams.tanggal_kembali',
+                'peminjams.alamat',
+                'peminjams.status',
+                'bukus.judul_buku',
+                'bukus.jenis_buku',
+                'bukus.tema'
+            )->paginate($limit);
 
         return response()->json([
             'status' => 'berhasil mendapatkan daftar peminjaman',
@@ -121,7 +134,9 @@ class PeminjamController extends Controller
 
             // Kurangi stok buku
             $buku->jumlah_buku -= 1;
+            $peminjam->status = 1;
             $buku->save();
+            $peminjam->save();
 
             // Komit transaksi
             DB::commit();
@@ -181,7 +196,9 @@ class PeminjamController extends Controller
 
                     // Increment the book's stock
                     $buku->jumlah_buku += 1;
+                    $peminjam->status = 0;
                     $buku->save();
+                    $peminjam->save();
 
                     // Commit the transaction
                     DB::commit();
