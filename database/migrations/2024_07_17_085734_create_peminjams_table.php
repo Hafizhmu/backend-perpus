@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('tanggal_kembali_sementara');
             $table->date('tanggal_kembali')->nullable();
             $table->string('alamat');
+            $table->integer('status');
             $table->timestamps();
         });
     }

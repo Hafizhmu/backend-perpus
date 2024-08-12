@@ -46,6 +46,7 @@ class PeminjamController extends Controller
                 'peminjams.tanggal_kembali_sementara',
                 'peminjams.tanggal_kembali',
                 'peminjams.alamat',
+                'peminjams.status',
                 'bukus.judul_buku',
                 'bukus.jenis_buku',
                 'bukus.tema'
