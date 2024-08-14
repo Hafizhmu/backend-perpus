@@ -27,8 +27,7 @@ class StorePeminjamRequest extends FormRequest
             'tanggal_peminjaman' => 'required|date',
             'tanggal_kembali_sementara' => 'required|date|after_or_equal:tanggal_peminjaman',
             'tanggal_kembali' => 'nullable|date|after_or_equal:tanggal_peminjaman',
-            'alamat' => 'required|string|max:255',
-            'status' => 'required|integer'
+            'alamat' => 'required|string|max:255'
         ];
     }
 }

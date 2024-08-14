@@ -65,6 +65,7 @@ class PeminjamController extends Controller
                 'bukus.tema'
             )
             ->where('bukus.id_buku', $request->input('id_buku'))
+            ->where('peminjams.status', 1)
             ->orderBy('peminjams.tanggal_peminjaman', 'desc')
             ->paginate($limit);
 
@@ -129,14 +130,17 @@ class PeminjamController extends Controller
         // Mulai transaksi database
         DB::beginTransaction();
         try {
-            // Buat peminjaman baru
-            $peminjam = Peminjam::create($request->all());
+            $dataPeminjaman = $request->all();
+            $dataPeminjaman['status'] = 0;
+        
+            // Buat peminjaman baru dengan status 0
+            $peminjam = Peminjam::create($dataPeminjaman);
+            // // Buat peminjaman baru
+            // $peminjam = Peminjam::create($request->all());
 
             // Kurangi stok buku
             $buku->jumlah_buku -= 1;
-            $peminjam->status = 1;
             $buku->save();
-            $peminjam->save();
 
             // Komit transaksi
             DB::commit();
