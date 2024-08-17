@@ -20,6 +20,7 @@ class BukuController extends Controller
         $jenisBuku = $request->query('jenis_buku');
         $tema = $request->query('tema');
         $tahunTerbit = $request->query('tahun_terbit');
+        $judulBuku = $request->query('judul_buku');
 
         // Use query builder with dynamic filters
         $query = Buku::query();
@@ -35,6 +36,9 @@ class BukuController extends Controller
 
         $query->when($tahunTerbit, function ($query, $tahunTerbit) {
             return $query->where('tahun_terbit', $tahunTerbit);
+        });
+        $query->when($judulBuku, function ($query, $judulBuku) {
+            return $query->where('judul_buku', 'like', '%' . $judulBuku . '%');
         });
 
         // Paginate the results
@@ -52,7 +56,7 @@ class BukuController extends Controller
     }
     public function bukuAll(Request $request)
     {
-      
+
         $buku = Buku::all();
 
         return response()->json([
@@ -65,9 +69,7 @@ class BukuController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
