@@ -131,7 +131,7 @@ class PeminjamController extends Controller
         DB::beginTransaction();
         try {
             $dataPeminjaman = $request->all();
-            $dataPeminjaman['status'] = 0;
+            $dataPeminjaman['status'] = 1;
         
             // Buat peminjaman baru dengan status 0
             $peminjam = Peminjam::create($dataPeminjaman);
